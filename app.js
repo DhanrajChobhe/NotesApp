@@ -5,7 +5,7 @@ const db = new Datastore({
   autoload: true,
 });
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
 app.listen(port, () => {
   console.log(`Notes app listening at http://localhost:${port}`);
