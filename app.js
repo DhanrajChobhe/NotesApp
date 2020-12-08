@@ -1,5 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
+
+dotenv.config();
+
 var Datastore = require("nedb");
 const db = new Datastore({
   filename: "./notes.db",
@@ -126,17 +131,35 @@ app.post("/new", (request, response) => {
         bcrypt.compare(data.pass, docs[0].password, function (err, res) {
           const correct = res;
           if (correct) {
-            response.json({
-              name: username,
-              account_present: true,
-              password_match: true,
-            });
+            jwt.sign(
+              { name: username, account_present: true, password_match: true },
+              process.env.S_K,
+              { algorithm: "RS256" },
+              function (err, token) {
+                const tok = token;
+                response.json({
+                  token: tok,
+                });
+              }
+            );
+            // response.json({
+            //   tok: ,
+            //   name: username,
+            //   account_present: true,
+            //   password_match: true,
+            // });
           } else {
-            response.json({
-              name: username,
-              account_present: true,
-              password_match: false,
-            });
+            jwt.sign(
+              { name: username, account_present: true, password_match: false },
+              process.env.S_K,
+              { algorithm: "RS256" },
+              function (err, token) {
+                const tok = token;
+                response.json({
+                  token: tok,
+                });
+              }
+            );
           }
         });
       }

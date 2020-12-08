@@ -47,8 +47,7 @@ enter_present.addEventListener("click", () => {
       if (b == false) {
         let div = document.createElement("div");
         div.id = "fail";
-        present.style.display = "none";
-        absent.style.display = "block";
+        window.location.replace("/user/createacc");
         div.innerHTML = "Account not found create one!";
         container.appendChild(div);
         window.setTimeout(() => {
