@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 var Datastore = require("nedb");
 const db = new Datastore({
   filename: "./notes.db",
@@ -69,7 +70,7 @@ app.post("/io", (request, response) => {
 app.post("/new", (request, response) => {
   const data = request.body;
   const username = data.name;
-  const userpass = data.pass;
+  // const userpass = data.pass;
   const new_user = data.new;
   const timestamp = Date.now();
   const timeString = new Date(timestamp).toTimeString().split(" ")[0];
@@ -81,13 +82,29 @@ app.post("/new", (request, response) => {
           name: username,
           availibility: true,
         });
-        user = {
-          name: username,
-          password: userpass,
-          joined: dateString,
-          notes: [],
-        };
-        db.insert(user);
+
+        bcrypt.genSalt(10, function (err, salt) {
+          if (err) throw err;
+          bcrypt.hash(data.pass, salt, function (err, hash) {
+            if (err) throw err;
+            const hashed = hash;
+            user = {
+              name: username,
+              password: hashed,
+              joined: dateString,
+              notes: [],
+            };
+            db.insert(user);
+          });
+        });
+
+        // user = {
+        //   name: username,
+        //   password: hashed,
+        //   joined: dateString,
+        //   notes: [],
+        // };
+        // db.insert(user);
       } else {
         response.json({
           name: username,
@@ -106,21 +123,22 @@ app.post("/new", (request, response) => {
           password_match: null,
         });
       } else {
-        const database_name = docs[0].name;
-        const database_password = docs[0].password;
-        if (database_password == data.pass) {
-          response.json({
-            name: username,
-            account_present: true,
-            password_match: true,
-          });
-        } else {
-          response.json({
-            name: username,
-            account_present: true,
-            password_match: false,
-          });
-        }
+        bcrypt.compare(data.pass, docs[0].password, function (err, res) {
+          const correct = res;
+          if (correct) {
+            response.json({
+              name: username,
+              account_present: true,
+              password_match: true,
+            });
+          } else {
+            response.json({
+              name: username,
+              account_present: true,
+              password_match: false,
+            });
+          }
+        });
       }
     });
   }
