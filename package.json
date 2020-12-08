@@ -16,7 +16,7 @@
   "author": "Dhanraj Chobhe",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "nedb": "^1.8.0",
     "nodemon": "^2.0.6"
