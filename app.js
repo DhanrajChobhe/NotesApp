@@ -11,7 +11,7 @@ app.listen(port, () => {
   console.log(`Notes app listening at http://localhost:${port}`);
 });
 
-app.use("/noteIt", express.static("public"));
+app.use("/user", express.static("public"));
 app.use(
   express.json({
     limit: "10mb",

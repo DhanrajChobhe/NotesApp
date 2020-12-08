@@ -14,6 +14,7 @@
     />
     <link rel="stylesheet" href="./style.css" />
     <title>NOTE IT</title>
+    <link rel="shortcut icon" type="image/jpg" href="./images/notesbrand.png" />
   </head>
 
   <body>
@@ -32,110 +33,17 @@
       </nav>
       <div id="acc">
         <label>Do you have an account?</label>
-        <button type="button" class="btn btn-success" id="yes">YES</button>
-        <button type="button" class="btn btn-info" id="no">No</button>
+        <a href="/user/login"
+          ><button type="button" class="btn btn-success" id="yes">YES</button>
+        </a>
+        <a href="/user/createacc"
+          ><button type="button" class="btn btn-info" id="no">No</button></a
+        >
         <img
           src="./images/note-icon.png"
           class="img-fluid"
           alt="Responsive image"
         />
-      </div>
-      <form id="present">
-        <div class="form-group">
-          <label for="name">User name</label>
-          <input
-            type="text"
-            class="form-control"
-            id="name_p"
-            aria-describedby="username"
-            placeholder="Enter Username"
-          />
-        </div>
-        <div class="form-group">
-          <label for="pass">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="pass_p"
-            placeholder="Password"
-          />
-        </div>
-        <button type="button" id="present_button" class="btn mb-3 btn-primary">
-          Submit
-        </button>
-      </form>
-
-      <form id="absent">
-        <h2>No! Create one</h2>
-        <div class="form-group">
-          <label for="name">User name</label>
-          <input
-            type="text"
-            class="form-control"
-            id="name_a"
-            aria-describedby="username"
-            placeholder="Enter Username"
-          />
-        </div>
-        <div class="form-group">
-          <label for="pass">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="pass_a"
-            placeholder="Enter a Password"
-          />
-        </div>
-        <div class="form-group">
-          <label for="pass">Confirm Password</label>
-          <input
-            type="password"
-            class="form-control"
-            id="conpass_a"
-            placeholder="Enter the Password again"
-          />
-        </div>
-        <button type="button" id="absent_button" class="btn mb-3 btn-primary">
-          Submit
-        </button>
-        <button type="button" id="check" class="btn mb-3 btn-secondary">
-          check
-        </button>
-      </form>
-
-      <div id="nf">
-        <div class="input-group mb-3 text-center">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">TOPIC</span>
-          </div>
-          <input
-            type="text"
-            id="topic"
-            class="form-control"
-            placeholder="Enter topic.."
-            aria-label="TOPIC"
-            aria-describedby="basic-addon1"
-          />
-        </div>
-
-        <div class="input-group mb-3 text-center">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Note</span>
-          </div>
-          <textarea
-            id="notes"
-            class="form-control"
-            aria-label="With textarea"
-          ></textarea>
-        </div>
-        <button type="button" class="btn btn-success mb-3 mx-auto" id="add">
-          add
-        </button>
-        <button type="button" class="btn btn-info mb-3 mx-auto" id="get">
-          get
-        </button>
-        <br />
-        <div id="entered_notes"></div>
       </div>
     </div>
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->

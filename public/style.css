@@ -6,12 +6,6 @@ button#submit,
 #get {
   width: 80px;
 }
-#nf,
-#present,
-#absent,
-#absent_button {
-  display: none;
-}
 
 #emptyerr,
 #passerr {
