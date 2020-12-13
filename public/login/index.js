@@ -29,7 +29,7 @@ enter_present.addEventListener("click", () => {
       let a = json.password_match;
       let b = json.account_present;
       let authtoken = json.token;
-      console.log(authtoken);
+
       function setCookie(cname, cvalue) {
         document.cookie = cname + "=" + cvalue + ";path = /user";
       }
@@ -45,9 +45,6 @@ enter_present.addEventListener("click", () => {
         }, 5000);
         var url = new URL("http://localhost:3000/user/noteIt/");
         window.location.replace(url);
-        // addFunction(name_p);
-        // getFunction(name_p);
-        // present.style.display = "none";
       }
       if (b == false) {
         let div = document.createElement("div");

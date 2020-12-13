@@ -5,21 +5,17 @@ const container = document.getElementById("container");
 const add = document.getElementById("add");
 const get = document.getElementById("get");
 const noteform = document.getElementById("nf");
+const logout = document.getElementById("logout");
 
-// const current_url = new URL(window.location.href);
-
-// const name_p = current_url.searchParams.get("name");
 getFunction();
 addFunction();
 
 function getFunction() {
   get.addEventListener("click", async () => {
-    console.log("1");
     notesDiv.innerHTML = "";
     data.getPost = "get";
     // cookies.getAll
     const authtoken = document.cookie.split("=")[1];
-    console.log("a" + authtoken);
     const options = {
       method: "POST",
       headers: {
@@ -78,7 +74,6 @@ function addFunction() {
       body: JSON.stringify(data),
     };
     const response = await fetch("/io", options);
-    // const json = await response.json();
 
     topic.value = "";
     notes.value = "";
@@ -163,3 +158,10 @@ function noteCard(
   div.appendChild(cardBody);
   notesDiv.appendChild(div);
 }
+
+const logout_function = () => {
+  document.cookie = "token=; path=/user;";
+  window.location.replace("/user/login");
+};
+
+logout.addEventListener("click", logout_function);
