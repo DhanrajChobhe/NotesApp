@@ -28,6 +28,12 @@ enter_present.addEventListener("click", () => {
       let json = await response.json();
       let a = json.password_match;
       let b = json.account_present;
+      let authtoken = json.token;
+      console.log(authtoken);
+      function setCookie(cname, cvalue) {
+        document.cookie = cname + "=" + cvalue + ";path = /user";
+      }
+      setCookie("token", authtoken);
       // return a;
       if (a == true && b == true) {
         let div = document.createElement("div");
@@ -38,7 +44,6 @@ enter_present.addEventListener("click", () => {
           document.getElementById("success").style.display = "none";
         }, 5000);
         var url = new URL("http://localhost:3000/user/noteIt/");
-        url.searchParams.set("name", name_p);
         window.location.replace(url);
         // addFunction(name_p);
         // getFunction(name_p);

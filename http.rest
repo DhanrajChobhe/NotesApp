@@ -1,0 +1,20 @@
+POST http://localhost:3000/new
+Content-Type: application/json
+
+{
+    "name": "DHANRAJ",
+    "pass": "Dhanraj",
+    "new": false
+}
+
+###
+
+POST http://localhost:3000/io
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiREhBTlJBSiIsImlhdCI6MTYwNzY5Nzk5Mn0.t4gn5U5oTn4E572ZbWxUNhYlfLIqO5tnlQh5nYvBIHE
+
+{
+    "topic" : "finally done",
+    "note" : "speaking about notes app!",
+    "getPost" : "post"
+}

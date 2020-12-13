@@ -6,21 +6,25 @@ const add = document.getElementById("add");
 const get = document.getElementById("get");
 const noteform = document.getElementById("nf");
 
-const current_url = new URL(window.location.href);
+// const current_url = new URL(window.location.href);
 
-const name_p = current_url.searchParams.get("name");
-getFunction(name_p);
-addFunction(name_p);
+// const name_p = current_url.searchParams.get("name");
+getFunction();
+addFunction();
 
-function getFunction(name) {
+function getFunction() {
   get.addEventListener("click", async () => {
+    console.log("1");
     notesDiv.innerHTML = "";
-    data.name = name;
     data.getPost = "get";
+    // cookies.getAll
+    const authtoken = document.cookie.split("=")[1];
+    console.log("a" + authtoken);
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        authorization: "bearer" + " " + authtoken,
       },
       body: JSON.stringify(data),
     };
@@ -56,23 +60,25 @@ function getFunction(name) {
   });
 }
 
-function addFunction(name) {
+function addFunction() {
   add.addEventListener("click", async () => {
     const notes = document.getElementById("notes");
     const topic = document.getElementById("topic");
     data.topic = topic.value || "Note";
     data.note = notes.value || "EMPTY";
-    data.name = name;
+    // data.name = name;
     data.getPost = "post";
+    const authtoken = document.cookie.split("=")[1];
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        authorization: "bearer" + " " + authtoken,
       },
       body: JSON.stringify(data),
     };
     const response = await fetch("/io", options);
-    const json = await response.json();
+    // const json = await response.json();
 
     topic.value = "";
     notes.value = "";
@@ -86,10 +92,12 @@ async function remove(name, id, topic, note) {
   da.id = id;
   da.topic = topic;
   da.note = note;
+  const authtoken = document.cookie.split("=")[1];
   const options = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      authorization: "bearer" + " " + authtoken,
     },
     body: JSON.stringify(da),
   };

@@ -30,53 +30,66 @@ const timeString = new Date(timestamp).toTimeString().split(" ")[0];
 
 app.post("/io", (request, response) => {
   const data = request.body;
-  const timestamp = Date.now();
-  const timeString = new Date(timestamp).toTimeString().split(" ")[0];
-  if (data.getPost == "post") {
-    db.update(
-      { name: data.name },
-      {
-        $push: {
-          notes: {
-            $each: [
-              {
-                date: dateString,
-                topic: data.topic,
-                note: data.note,
-                time: timeString,
-              },
-            ],
+  const headers = request.headers.authorization;
+  console.log("headers" + headers);
+  const token = headers.split(" ")[1];
+  console.log("token" + token);
+  const result = verifytoken(token, process.env.S_K);
+  console.log("r " + result);
+  if (result !== "") {
+    console.log("1");
+    const timestamp = Date.now();
+    const timeString = new Date(timestamp).toTimeString().split(" ")[0];
+    if (data.getPost == "post") {
+      console.log("1");
+      db.update(
+        { name: result },
+        {
+          $push: {
+            notes: {
+              $each: [
+                {
+                  date: dateString,
+                  topic: data.topic,
+                  note: data.note,
+                  time: timeString,
+                },
+              ],
+            },
           },
-        },
-      }
-    );
-    response.json({
-      status: "success",
-      date: dateString,
-      timestamp: timeString,
-      topic: data.topic,
-      note: data.note,
-      append: "done",
-    });
-  } else if (data.getPost == "get") {
-    const user = request.body;
-    const username = user.name;
-    db.find({ name: username }, (err, docs) => {
-      if (err) throw err;
-      const data = docs;
-      const res = {
-        notes: data[0].notes,
-      };
-      response.json(res);
-    });
+        }
+      );
+      response.json({
+        status: "success",
+        date: dateString,
+        timestamp: timeString,
+        topic: data.topic,
+        note: data.note,
+        append: "done",
+      });
+    } else if (data.getPost == "get") {
+      // const user = request.body;
+      // const username = user.name;
+      db.find({ name: result }, (err, docs) => {
+        if (err) throw err;
+        const data = docs;
+        const res = {
+          notes: data[0].notes,
+        };
+        response.json(res);
+      });
+    }
   }
 });
 
 app.post("/new", (request, response) => {
   const data = request.body;
+  console.log(data);
+
   const username = data.name;
   // const userpass = data.pass;
   const new_user = data.new;
+  console.log(new_user);
   const timestamp = Date.now();
   const timeString = new Date(timestamp).toTimeString().split(" ")[0];
   if (new_user == true) {
@@ -102,14 +115,6 @@ app.post("/new", (request, response) => {
             db.insert(user);
           });
         });
-
-        // user = {
-        //   name: username,
-        //   password: hashed,
-        //   joined: dateString,
-        //   notes: [],
-        // };
-        // db.insert(user);
       } else {
         response.json({
           name: username,
@@ -117,7 +122,7 @@ app.post("/new", (request, response) => {
         });
       }
     });
-  } else {
+  } else if (new_user == false) {
     db.find({ name: username }, (err, docs) => {
       if (err) throw err;
 
@@ -129,34 +134,38 @@ app.post("/new", (request, response) => {
         });
       } else {
         bcrypt.compare(data.pass, docs[0].password, function (err, res) {
-          const correct = res;
-          if (correct) {
+          if (err) throw err;
+
+          if (res) {
             jwt.sign(
-              { name: username, account_present: true, password_match: true },
+              { name: username },
               process.env.S_K,
-              { algorithm: "RS256" },
+              { algorithm: "HS256" },
               function (err, token) {
+                if (err) {
+                  console.log(err);
+                }
                 const tok = token;
+                console.log(tok);
                 response.json({
                   token: tok,
+                  account_present: true,
+                  password_match: true,
                 });
+                // response.redirect("http://localhost:3000/user/noteIt");
               }
             );
-            // response.json({
-            //   tok: ,
-            //   name: username,
-            //   account_present: true,
-            //   password_match: true,
-            // });
           } else {
             jwt.sign(
-              { name: username, account_present: true, password_match: false },
+              { name: username },
               process.env.S_K,
-              { algorithm: "RS256" },
+              { algorithm: "HS256" },
               function (err, token) {
                 const tok = token;
                 response.json({
                   token: tok,
+                  account_present: true,
+                  password_match: false,
                 });
               }
             );
@@ -169,9 +178,16 @@ app.post("/new", (request, response) => {
 
 app.post("/remove", (request, response) => {
   const data = request.body;
-  if (data.remove == true) {
+  const headers = request.headers.authorization;
+  console.log("headers" + headers);
+  const token = headers.split(" ")[1];
+  console.log("token" + token);
+  const result = verifytoken(token, process.env.S_K);
+  console.log("r " + result);
+
+  if (data.remove == true && result !== "") {
     db.update(
-      { name: data.name },
+      { name: result },
       { $pull: { notes: { topic: data.topic, note: data.note } } }
     );
   }
@@ -181,15 +197,25 @@ app.post("/remove", (request, response) => {
   });
 });
 
-app.get("/io", (req, res) => {
-  const user = req.body;
-  const username = user.name;
-  db.find({ name: username }, (err, docs) => {
-    if (err) throw err;
-    const data = docs;
-    const response = {
-      notes: data[0].notes,
-    };
-    res.json(response);
+// app.get("/io", (req, res) => {
+//   const user = req.body;
+//   const username = user.name;
+//   db.find({ name: username }, (err, docs) => {
+//     if (err) throw err;
+//     const data = docs;
+//     const response = {
+//       notes: data[0].notes,
+//     };
+//     res.json(response);
+//   });
+// });
+function verifytoken(token, secret) {
+  const verresult = jwt.verify(token, secret, function (err, decoded) {
+    if (err) console.log(err);
+    console.log("decoded " + decoded);
+    const user = decoded.name;
+    console.log("user" + user);
+    return user;
   });
-});
+  return verresult;
+}
